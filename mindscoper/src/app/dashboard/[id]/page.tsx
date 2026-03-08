@@ -8,7 +8,7 @@ import type { Session } from "@/lib/types";
 import { TranscriptPanel } from "@/components/TranscriptPanel";
 import { AISummaryPanel } from "@/components/AISummaryPanel";
 import { WellnessScore } from "@/components/WellnessScore";
-import { KnowledgeGraph } from "@/components/KnowledgeGraph";
+import { KnowledgeGraphWrapper } from "@/components/KnowledgeGraphWrapper";
 
 export default function DashboardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -88,7 +88,7 @@ export default function DashboardPage({ params }: { params: Promise<{ id: string
 
         {/* Bottom Right: Knowledge Graph */}
         <div className="animate-fade-in-up" style={{ animationDelay: "300ms" }}>
-          <KnowledgeGraph
+          <KnowledgeGraphWrapper
             entities={session.analysis.entities}
             edges={session.analysis.edges}
           />

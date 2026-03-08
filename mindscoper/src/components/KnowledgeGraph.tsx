@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import { Network } from "lucide-react";
+// Network icon moved to KnowledgeGraphWrapper
 import type { Entity, Edge } from "@/lib/types";
 
 interface KnowledgeGraphProps {
@@ -178,31 +178,8 @@ export function KnowledgeGraph({ entities, edges }: KnowledgeGraphProps) {
   }, [entities, edges]);
 
   return (
-    <div className="flex h-full flex-col rounded-2xl border border-border bg-card shadow-sm">
-      <div className="flex items-center justify-between border-b border-border px-5 py-3">
-        <div className="flex items-center gap-2">
-          <Network className="h-4 w-4 text-accent" />
-          <h3 className="text-sm font-semibold text-card-foreground">
-            Knowledge Relation Map
-          </h3>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(typeColors).map(([type, color]) => (
-            <div key={type} className="flex items-center gap-1">
-              <span
-                className="inline-block h-2.5 w-2.5 rounded-full"
-                style={{ backgroundColor: color }}
-              />
-              <span className="text-[10px] capitalize text-muted-foreground">
-                {type}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div ref={containerRef} className="relative flex-1 min-h-[300px]">
-        <svg ref={svgRef} className="h-full w-full" />
-      </div>
+    <div ref={containerRef} className="relative h-full w-full min-h-[300px]">
+      <svg ref={svgRef} className="h-full w-full" />
     </div>
   );
 }
