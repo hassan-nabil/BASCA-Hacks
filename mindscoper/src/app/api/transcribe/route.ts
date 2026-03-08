@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
       // Note: OpenAI doesn't offer a "medium" variant via API — whisper-1 is the
       // largest (large-v2) model available through the API and already the best quality.
       file: file,
+      language: "en",
       response_format: "text",
     });
 
