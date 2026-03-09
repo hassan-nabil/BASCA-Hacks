@@ -2,13 +2,14 @@
 
 import { use, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Clock, Mic, Upload } from "lucide-react";
+import { ArrowLeft, Clock, Mic, Upload, FileDown, FileText } from "lucide-react";
 import { getSession } from "@/lib/sessions";
 import type { Session } from "@/lib/types";
 import { TranscriptPanel } from "@/components/TranscriptPanel";
 import { AISummaryPanel } from "@/components/AISummaryPanel";
 import { WellnessScore } from "@/components/WellnessScore";
 import { KnowledgeGraph } from "@/components/KnowledgeGraph";
+import { generateSessionReport, downloadTranscript } from "@/lib/report";
 
 export default function DashboardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -66,6 +67,22 @@ export default function DashboardPage({ params }: { params: Promise<{ id: string
               </span>
             </div>
           </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => downloadTranscript(session)}
+            className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-card-foreground shadow-sm transition-colors hover:bg-muted"
+          >
+            <FileText className="h-3.5 w-3.5" />
+            Download Transcript
+          </button>
+          <button
+            onClick={() => generateSessionReport(session)}
+            className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-accent-dark"
+          >
+            <FileDown className="h-3.5 w-3.5" />
+            Generate Report
+          </button>
         </div>
       </div>
 
