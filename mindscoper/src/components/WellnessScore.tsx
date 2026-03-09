@@ -106,7 +106,7 @@ export function WellnessScore({ score }: WellnessScoreProps) {
         </div>
 
         {/* Score bar */}
-        <div className="w-full max-w-[200px]">
+        <div className="w-full max-w-50">
           <div className="flex justify-between text-[10px] text-muted-foreground">
             <span>Critical</span>
             <span>Good</span>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getGeminiFlash } from "@/lib/gemini";
-import { ANALYSIS_PROMPT } from "@/lib/prompts";
+import { getAnalysisPrompt } from "@/lib/prompts";
 import type { AnalysisResult } from "@/lib/types";
 
 function extractJSON(text: string): string {
@@ -34,8 +34,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const wordCount = transcript.trim().split(/\s+/).length;
+    const prompt = getAnalysisPrompt(wordCount);
+
     const result = await getGeminiFlash().generateContent(
-      ANALYSIS_PROMPT + transcript
+      prompt + transcript
     );
 
     const responseText = result.response.text();

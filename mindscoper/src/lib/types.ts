@@ -33,6 +33,11 @@ export interface AnalysisResult {
   possibleConditionHints: string[];
   temporalPattern: string;
   storyFlow: StoryFlowStep[];
+  therapeuticTechniques?: string[];
+  riskFactors?: string[];
+  protectiveFactors?: string[];
+  sessionTopics?: string[];
+  patientInsight?: string;
 }
 
 export interface Session {

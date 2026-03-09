@@ -69,25 +69,28 @@ export default function DashboardPage({ params }: { params: Promise<{ id: string
         </div>
       </div>
 
-      {/* 4-Panel Grid */}
-      <div className="grid gap-4 lg:grid-cols-2 lg:grid-rows-2" style={{ minHeight: "calc(100vh - 180px)" }}>
+      {/* 4-Panel Grid — fixed viewport height, each cell scrolls internally */}
+      <div
+        className="grid gap-4 lg:grid-cols-2 lg:grid-rows-2"
+        style={{ height: "calc(100vh - 140px)" }}
+      >
         {/* Top Left: Wellness Score */}
-        <div className="animate-fade-in-up" style={{ animationDelay: "0ms" }}>
+        <div className="animate-fade-in-up min-h-0 overflow-hidden" style={{ animationDelay: "0ms" }}>
           <WellnessScore score={session.analysis.wellnessScore} />
         </div>
 
         {/* Top Right: AI Summary */}
-        <div className="animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+        <div className="animate-fade-in-up min-h-0 overflow-hidden" style={{ animationDelay: "100ms" }}>
           <AISummaryPanel analysis={session.analysis} />
         </div>
 
         {/* Bottom Left: Transcript */}
-        <div className="animate-fade-in-up" style={{ animationDelay: "200ms" }}>
+        <div className="animate-fade-in-up min-h-0 overflow-hidden" style={{ animationDelay: "200ms" }}>
           <TranscriptPanel transcript={session.transcript} />
         </div>
 
         {/* Bottom Right: Knowledge Graph */}
-        <div className="animate-fade-in-up" style={{ animationDelay: "300ms" }}>
+        <div className="animate-fade-in-up min-h-0 overflow-hidden" style={{ animationDelay: "300ms" }}>
           <KnowledgeGraph
             entities={session.analysis.entities}
             edges={session.analysis.edges}

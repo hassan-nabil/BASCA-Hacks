@@ -200,7 +200,7 @@ export function KnowledgeGraph({ entities, edges }: KnowledgeGraphProps) {
           ))}
         </div>
       </div>
-      <div ref={containerRef} className="relative flex-1 min-h-[300px]">
+      <div ref={containerRef} className="relative flex-1 min-h-75">
         <svg ref={svgRef} className="h-full w-full" />
       </div>
     </div>

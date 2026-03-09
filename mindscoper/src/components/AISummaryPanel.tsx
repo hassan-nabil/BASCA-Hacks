@@ -139,6 +139,93 @@ export function AISummaryPanel({ analysis }: AISummaryPanelProps) {
           </div>
         )}
 
+        {/* Session Topics (long sessions) */}
+        {analysis.sessionTopics && analysis.sessionTopics.length > 0 && (
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Topics Covered
+            </p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {analysis.sessionTopics.map((topic) => (
+                <span
+                  key={topic}
+                  className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700"
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Therapeutic Techniques (long sessions) */}
+        {analysis.therapeuticTechniques && analysis.therapeuticTechniques.length > 0 && (
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Techniques Observed
+            </p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {analysis.therapeuticTechniques.map((tech) => (
+                <span
+                  key={tech}
+                  className="rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Risk & Protective Factors (long sessions) */}
+        {analysis.riskFactors && analysis.riskFactors.length > 0 && (
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Risk Factors
+            </p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {analysis.riskFactors.map((risk) => (
+                <span
+                  key={risk}
+                  className="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-700"
+                >
+                  {risk}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {analysis.protectiveFactors && analysis.protectiveFactors.length > 0 && (
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Protective Factors
+            </p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {analysis.protectiveFactors.map((factor) => (
+                <span
+                  key={factor}
+                  className="rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700"
+                >
+                  {factor}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Patient Insight (long sessions) */}
+        {analysis.patientInsight && (
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Patient Insight
+            </p>
+            <p className="mt-1 text-sm text-card-foreground">
+              {analysis.patientInsight}
+            </p>
+          </div>
+        )}
+
         {/* Suggested Follow-up */}
         <div className="rounded-lg border border-accent/20 bg-accent/5 p-3">
           <p className="text-xs font-medium uppercase tracking-wider text-accent-dark">
