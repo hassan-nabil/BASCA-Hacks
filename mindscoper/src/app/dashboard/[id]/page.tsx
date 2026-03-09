@@ -89,7 +89,7 @@ export default function DashboardPage({ params }: { params: Promise<{ id: string
       {/* 4-Panel Grid — fixed viewport height, each cell scrolls internally */}
       <div
         className="grid gap-4 lg:grid-cols-2 lg:grid-rows-2"
-        style={{ height: "calc(100vh - 140px)" }}
+        style={{ height: "calc(100vh - 80px)" }}
       >
         {/* Top Left: Wellness Score */}
         <div className="animate-fade-in-up min-h-0 overflow-hidden" style={{ animationDelay: "0ms" }}>

@@ -6,6 +6,11 @@ const PAGE_WIDTH = 210;
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2;
 const LINE_HEIGHT = 6;
 
+// Clean text to avoid Unicode rendering issues in PDF (jsPDF Helvetica only supports ASCII)
+function cleanText(text: string): string {
+  return text.replace(/[^\x20-\x7E]/g, '').replace(/→/g, '->');
+}
+
 function addPageIfNeeded(doc: jsPDF, y: number, needed: number): number {
   if (y + needed > 280) {
     doc.addPage();
@@ -21,7 +26,7 @@ function drawSectionHeader(doc: jsPDF, title: string, y: number): number {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
-  doc.text(title, MARGIN + 3, y + 5.5);
+  doc.text(cleanText(title), MARGIN + 3, y + 5.5);
   doc.setTextColor(33, 33, 33);
   return y + 12;
 }
@@ -31,11 +36,11 @@ function drawField(doc: jsPDF, label: string, value: string, y: number): number 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text(label, MARGIN, y);
+  doc.text(cleanText(label), MARGIN, y);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(33, 33, 33);
-  const lines = doc.splitTextToSize(value, CONTENT_WIDTH);
+  const lines = doc.splitTextToSize(cleanText(value), CONTENT_WIDTH);
   y += LINE_HEIGHT;
   y = addPageIfNeeded(doc, y, lines.length * LINE_HEIGHT);
   doc.text(lines, MARGIN, y);
@@ -48,12 +53,13 @@ function drawTagList(doc: jsPDF, label: string, tags: string[], color: [number, 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text(label, MARGIN, y);
+  doc.text(cleanText(label), MARGIN, y);
   y += LINE_HEIGHT;
 
   let x = MARGIN;
   for (const tag of tags) {
-    const tagWidth = doc.getTextWidth(tag) + 6;
+    const cleanTag = cleanText(tag);
+    const tagWidth = doc.getTextWidth(cleanTag) + 6;
     if (x + tagWidth > MARGIN + CONTENT_WIDTH) {
       x = MARGIN;
       y += 7;
@@ -64,7 +70,7 @@ function drawTagList(doc: jsPDF, label: string, tags: string[], color: [number, 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7.5);
     doc.setTextColor(60, 60, 60);
-    doc.text(tag, x + 3, y);
+    doc.text(cleanTag, x + 3, y);
     x += tagWidth + 3;
   }
   return y + 8;
@@ -144,7 +150,7 @@ export function generateSessionReport(session: Session): void {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(185, 28, 28);
-      doc.text(`• ${risk}`, MARGIN + 2, y);
+      doc.text(`• ${cleanText(risk)}`, MARGIN + 2, y);
       y += LINE_HEIGHT;
     }
     y += 2;
@@ -158,7 +164,7 @@ export function generateSessionReport(session: Session): void {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(21, 128, 61);
-      doc.text(`• ${factor}`, MARGIN + 2, y);
+      doc.text(`• ${cleanText(factor)}`, MARGIN + 2, y);
       y += LINE_HEIGHT;
     }
     y += 2;
@@ -178,11 +184,11 @@ export function generateSessionReport(session: Session): void {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8);
       doc.setTextColor(59, 130, 246);
-      doc.text(`[${step.stage}]`, MARGIN + 2, y);
+      doc.text(`[${cleanText(step.stage)}]`, MARGIN + 2, y);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(33, 33, 33);
-      const descLines = doc.splitTextToSize(step.description, CONTENT_WIDTH - 30);
+      const descLines = doc.splitTextToSize(cleanText(step.description), CONTENT_WIDTH - 30);
       doc.text(descLines, MARGIN + 30, y);
       y += Math.max(LINE_HEIGHT, descLines.length * LINE_HEIGHT) + 2;
     }
@@ -204,7 +210,7 @@ export function generateSessionReport(session: Session): void {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(33, 33, 33);
-    doc.text(entities.map((e) => e.label).join(", "), MARGIN + 28, y);
+    doc.text(cleanText(entities.map((e) => e.label).join(", ")), MARGIN + 28, y);
     y += LINE_HEIGHT + 1;
   }
 
@@ -222,8 +228,13 @@ export function generateSessionReport(session: Session): void {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(60, 60, 60);
+    
+    const sourceLabel = cleanText(sourceEntity?.label || edge.source);
+    const edgeLabel = cleanText(edge.label);
+    const targetLabel = cleanText(targetEntity?.label || edge.target);
+    
     doc.text(
-      `${sourceEntity?.label || edge.source} → ${edge.label} → ${targetEntity?.label || edge.target}`,
+      `${sourceLabel} -> ${edgeLabel} -> ${targetLabel}`,
       MARGIN + 4,
       y
     );
