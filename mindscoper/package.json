@@ -9,25 +9,30 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
     "@google/generative-ai": "^0.24.1",
+    "@mediabunny/mp3-encoder": "^1.39.2",
     "d3": "^7.9.0",
-    "jspdf": "^4.2.0",
+    "idb": "^8.0.3",
     "lucide-react": "^0.577.0",
-    "next": "16.1.6",
-    "openai": "^6.27.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "mediabunny": "^1.39.2",
+    "next": "^16.2.0",
+    "openai": "^6.32.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "sonner": "^2.0.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/d3": "^7.4.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4",
+    "eslint-config-next": "^16.2.0",
+    "tailwindcss": "^4.2.2",
     "typescript": "^5"
   }
 }

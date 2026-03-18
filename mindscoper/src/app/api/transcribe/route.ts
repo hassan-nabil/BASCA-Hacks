@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOpenAIClient } from "@/lib/openai";
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB — Whisper limit
+const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB — Will be compressed/chunked before Whisper
 
 const MIME_TO_EXT: Record<string, string> = {
   "audio/webm": "webm",
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     if (audioFile.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: `File too large (${(audioFile.size / 1024 / 1024).toFixed(1)}MB). Maximum is 25MB.` },
+        { error: `File too large (${(audioFile.size / 1024 / 1024).toFixed(1)}MB). Maximum is 1GB.` },
         { status: 400 }
       );
     }

@@ -17,6 +17,7 @@ import { AudioRecorder } from "@/components/AudioRecorder";
 import { FileUploader } from "@/components/FileUploader";
 import type { AnalysisResult } from "@/lib/types";
 import { saveSession } from "@/lib/sessions";
+import { processLargeAudio, getProcessingEstimate, formatFileSize } from "@/lib/audioProcessor";
 
 type InputMode = "select" | "record" | "upload";
 type ProcessingStage =
@@ -33,29 +34,49 @@ export default function Home() {
   const processAudio = useCallback(
     async (audioData: Blob | File, inputMethod: "recording" | "upload", fileName?: string) => {
       try {
-        // Client-side file size check (25MB Whisper limit)
-        if (audioData.size > 25 * 1024 * 1024) {
-          toast.error(`File too large (${(audioData.size / 1024 / 1024).toFixed(1)}MB). Maximum is 25MB.`);
+        // Client-side file size check (1GB limit for large files)
+        if (audioData.size > 1024 * 1024 * 1024) {
+          toast.error(`File too large (${(audioData.size / 1024 / 1024).toFixed(1)}MB). Maximum is 1GB.`);
           return;
         }
 
-        setStage("transcribing");
-        toast.info("Transcribing audio with Whisper AI...");
-
-        const formData = new FormData();
-        formData.append("audio", audioData);
-
-        const transcribeRes = await fetch("/api/transcribe", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!transcribeRes.ok) {
-          const err = await transcribeRes.json();
-          throw new Error(err.error || "Transcription failed");
+        // Show processing estimate for large files
+        if (audioData.size > 8 * 1024 * 1024) {
+          const estimate = getProcessingEstimate(audioData.size);
+          toast.info(`${estimate.description} (estimated ${estimate.estimatedTime} minutes)`);
         }
 
-        const { transcript } = await transcribeRes.json();
+        setStage("transcribing");
+        
+        // Convert Blob to File if needed
+        const audioFile = audioData instanceof File 
+          ? audioData 
+          : new File([audioData], `recording.webm`, { type: audioData.type });
+        
+        // Use the new audio processor for large files
+        const processingResult = await processLargeAudio(
+          audioFile,
+          (stage) => {
+            if (stage.includes('Complete')) {
+              setStage("analyzing");
+              toast.info("Analyzing transcript with Gemini AI...");
+            } else {
+              toast.info(stage);
+            }
+          },
+          (chunkIndex, totalChunks) => {
+            toast.success(`Chunk ${chunkIndex}/${totalChunks} transcribed`);
+          }
+        );
+
+        const { transcript, processingMethod, processingStats } = processingResult;
+
+        // Show processing summary
+        if (processingMethod === 'compressed') {
+          toast.success(`Compressed ${formatFileSize(processingStats.originalSize)} to ${formatFileSize(processingStats.compressedSize!)} (${processingStats.compressionRatio!.toFixed(1)}x)`);
+        } else if (processingMethod === 'chunked') {
+          toast.success(`Processed ${processingStats.chunkCount} chunks`);
+        }
 
         setStage("analyzing");
         toast.info("Analyzing transcript with Gemini AI...");

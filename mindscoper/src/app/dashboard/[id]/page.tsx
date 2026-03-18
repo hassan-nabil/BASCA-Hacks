@@ -9,7 +9,7 @@ import { TranscriptPanel } from "@/components/TranscriptPanel";
 import { AISummaryPanel } from "@/components/AISummaryPanel";
 import { WellnessScore } from "@/components/WellnessScore";
 import { KnowledgeGraph } from "@/components/KnowledgeGraph";
-import { generateSessionReport, downloadTranscript } from "@/lib/report";
+import { generateSessionReportSync, downloadTranscript } from "@/lib/report";
 
 export default function DashboardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -77,7 +77,7 @@ export default function DashboardPage({ params }: { params: Promise<{ id: string
             Download Transcript
           </button>
           <button
-            onClick={() => generateSessionReport(session)}
+            onClick={() => generateSessionReportSync(session)}
             className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-accent-dark"
           >
             <FileDown className="h-3.5 w-3.5" />
