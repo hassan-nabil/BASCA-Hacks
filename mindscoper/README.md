@@ -1,58 +1,51 @@
 # MindScoper
 
-**AI-powered therapy session analyzer that turns conversations into visual mental health maps.**
+AI-powered therapy session analyzer that turns conversations into visual mental health maps.
 
-MindScoper records or accepts uploaded therapy session audio, transcribes it with OpenAI Whisper, then uses Google Gemini 2.5 to extract psychological entities, detect behavioral patterns, compute a wellness score, and render an interactive knowledge graph — all in real-time.
+MindScoper records or accepts uploaded therapy-session audio, transcribes it with OpenAI Whisper, then uses Gemini 2.5 Flash to extract psychological entities, detect behavioral patterns, compute a wellness score, and render an interactive knowledge graph.
 
-> See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full system specification and design details.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full technical specification.
 
-## Features
+## Highlights
 
-- **Live Recording** — Capture therapy sessions directly from the browser microphone (WebM/Opus)
-- **File Upload** — Drag-and-drop support for MP3, WAV, M4A, MP4, WebM, OGG, FLAC (up to 25 MB)
-- **Whisper Transcription** — Accurate speech-to-text via OpenAI Whisper (`whisper-1` / large-v2)
-- **Gemini Analysis** — Structured clinical entity extraction, relationship mapping, pattern detection
-- **Knowledge Relation Map** — Interactive D3.js force-directed graph with draggable nodes, zoom, and pan
-- **Wellness Score** — 1–10 circular gauge with color-coded severity (Critical → Good)
-- **Session History** — Past sessions persisted in localStorage with view/delete
+- Live recording from browser microphone (WebM/Opus)
+- File upload for MP3, WAV, M4A, MP4, WebM, OGG, FLAC
+- Whisper transcription via OpenAI (`whisper-1`)
+- Structured analysis with Gemini 2.5 Flash
+- Interactive D3 knowledge graph with drag, zoom, and pan
+- 1-10 wellness score gauge and concern-level badge
+- Session history persisted locally in browser storage
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Framework | Next.js 16 (App Router, Turbopack) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
-| Styling | TailwindCSS v4 |
+| Styling | Tailwind CSS v4 |
 | Transcription | OpenAI Whisper API (`whisper-1`) |
 | Analysis | Google Gemini 2.5 Flash |
-| Visualization | D3.js (force-directed graph) |
-| Notifications | Sonner (toast) |
-| Icons | Lucide React |
+| Visualization | D3.js |
+| Notifications | Sonner |
 
-## Getting Started
+## Quick Start
 
 ### 1. Install dependencies
 
 ```bash
-cd mindscoper
 npm install
 ```
 
-### 2. Set up environment
+### 2. Configure environment variables
 
-```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local` and add both API keys:
+Create `.env.local` and add:
 
 ```ini
-GEMINI_API_KEY=your_gemini_key_here
-OPENAI_API_KEY=your_openai_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-- **Gemini key** — [Google AI Studio](https://aistudio.google.com/apikey) (free tier available)
-- **OpenAI key** — [OpenAI Platform](https://platform.openai.com/api-keys) (Whisper costs ~$0.006/min)
+You can copy values from `.env.example`.
 
 ### 3. Run the dev server
 
@@ -61,6 +54,19 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## NPM Scripts
+
+- `npm run dev` - Start local dev server
+- `npm run build` - Build production bundle
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint checks
+
+## API Flow
+
+1. `POST /api/transcribe` receives audio and returns `{ transcript }`
+2. `POST /api/analyze` receives transcript and returns `{ analysis }`
+3. Session data is saved to localStorage and shown at `/dashboard/[id]`
 
 ## How It Works
 
@@ -81,29 +87,16 @@ Gemini 2.5 Flash (clinical analysis)
 
 ## Project Structure
 
-```
+```text
 src/
-├── app/
-│   ├── page.tsx              # Landing page — record or upload
-│   ├── dashboard/[id]/       # 4-panel analysis dashboard
-│   ├── sessions/             # Session history list
-│   └── api/
-│       ├── transcribe/       # Whisper audio → transcript
-│       └── analyze/          # Gemini transcript → analysis JSON
-├── components/
-│   ├── AudioRecorder.tsx     # MediaRecorder live capture
-│   ├── FileUploader.tsx      # Drag-and-drop file upload
-│   ├── TranscriptPanel.tsx   # Scrollable transcript display
-│   ├── AISummaryPanel.tsx    # AI findings, patterns, story flow
-│   ├── KnowledgeGraph.tsx    # D3.js force-directed graph
-│   ├── WellnessScore.tsx     # Circular SVG gauge
-│   └── Navbar.tsx            # Top navigation bar
-└── lib/
-    ├── gemini.ts             # Gemini 2.5 client (lazy init)
-    ├── openai.ts             # OpenAI client (lazy init)
-    ├── prompts.ts            # Structured analysis prompt
-    ├── types.ts              # TypeScript interfaces
-    └── sessions.ts           # localStorage CRUD
+        app/
+                api/
+                        transcribe/
+                        analyze/
+                dashboard/[id]/
+                sessions/
+        components/
+        lib/
 ```
 
 ## AI Pipeline
@@ -115,11 +108,24 @@ src/
 
 ### What Gemini Extracts
 
-- **Entities** — Symptoms, behaviors, emotions, events, triggers, outcomes
-- **Relationships** — Causal links between entities (e.g., "triggers", "leads to")
-- **Wellness Score** — 1–10 overall mental health assessment
-- **Primary Pattern** — Episodic, trait-based, reactive, etc.
-- **Temporal Pattern** — Whether symptoms are constant, cyclical, or situational
-- **Condition Hints** — Possible clinical indicators (ADHD, Bipolar, BPD, Depression, Anxiety)
-- **Story Flow** — Narrative arc: Life Event → Trigger → Emotion → Behavior → Outcome
-- **Follow-up Recommendation** — Suggested next steps for the therapist
+- **Entities** - Symptoms, behaviors, emotions, events, triggers, outcomes
+- **Relationships** - Causal links between entities (for example, "triggers", "leads to")
+- **Wellness Score** - 1-10 overall mental health assessment
+- **Primary Pattern** - Episodic, trait-based, reactive, etc.
+- **Temporal Pattern** - Whether symptoms are constant, cyclical, or situational
+- **Condition Hints** - Possible clinical indicators (ADHD, Bipolar, BPD, Depression, Anxiety)
+- **Story Flow** - Narrative arc: Life Event -> Trigger -> Emotion -> Behavior -> Outcome
+- **Follow-up Recommendation** - Suggested next steps for the therapist
+
+## Notes and Limitations
+
+- This tool is an analysis aid, not a medical diagnosis system.
+- Session data is saved in localStorage; clearing browser data removes stored sessions.
+- Audio upload size is capped at 25 MB.
+- API keys are required for both Gemini and OpenAI.
+
+## Troubleshooting
+
+- If transcription fails, verify `OPENAI_API_KEY` and audio format support.
+- If analysis fails, verify `GEMINI_API_KEY` and check API quota.
+- If no sessions appear, confirm browser storage is enabled and not cleared.
